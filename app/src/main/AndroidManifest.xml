@@ -5,6 +5,9 @@
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -14,6 +17,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity
+            android:name=".ARFrame"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_arframe"
+            android:theme="@style/Theme.AppCompat.NoActionBar.Fullscreen" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
