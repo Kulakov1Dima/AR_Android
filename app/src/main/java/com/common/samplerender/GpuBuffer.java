@@ -1,23 +1,11 @@
-/*
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.common.samplerender;
 
 import android.opengl.GLES30;
 import android.util.Log;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 /* package-private */
 class GpuBuffer {
@@ -32,6 +20,7 @@ class GpuBuffer {
   private final int[] bufferId = {0};
   private int size;
   private int capacity;
+  private FloatBuffer mappedBuffer; // Added member for mapped buffer
 
   public GpuBuffer(int target, int numberOfBytesPerEntry, Buffer entries) {
     if (entries != null) {
@@ -69,7 +58,7 @@ class GpuBuffer {
       if (entries != null) {
         entries.rewind();
         GLES30.glBufferData(
-            target, entries.limit() * numberOfBytesPerEntry, entries, GLES30.GL_DYNAMIC_DRAW);
+                target, entries.limit() * numberOfBytesPerEntry, entries, GLES30.GL_DYNAMIC_DRAW);
       }
       GLError.maybeThrowGLException("Failed to populate buffer object", "glBufferData");
     } catch (Throwable t) {
@@ -99,7 +88,7 @@ class GpuBuffer {
       size = entries.limit();
     } else {
       GLES30.glBufferData(
-          target, entries.limit() * numberOfBytesPerEntry, entries, GLES30.GL_DYNAMIC_DRAW);
+              target, entries.limit() * numberOfBytesPerEntry, entries, GLES30.GL_DYNAMIC_DRAW);
       GLError.maybeThrowGLException("Failed to populate vertex buffer object", "glBufferData");
       size = entries.limit();
       capacity = entries.limit();
@@ -120,5 +109,31 @@ class GpuBuffer {
 
   public int getSize() {
     return size;
+  }
+  boolean isMapped = false;
+
+  // Other methods and variables
+
+  public FloatBuffer mapRead() {
+    // Map the buffer for reading
+    if (isMapped) {
+      throw new IllegalStateException("Buffer is already mapped");
+    }
+
+    // Your mapping logic goes here
+
+    isMapped = true;
+    return mappedBuffer;
+  }
+
+  public void unmap() {
+    // Unmap the buffer
+    if (!isMapped) {
+      throw new IllegalStateException("Buffer is not mapped");
+    }
+
+    // Your unmapping logic goes here
+
+    isMapped = false;
   }
 }

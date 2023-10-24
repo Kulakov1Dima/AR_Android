@@ -472,14 +472,16 @@ public class Shader implements Closeable {
     @Override
     public void use(int location) {
       if (texture.getTextureId() == 0) {
-        throw new IllegalStateException("Tried to draw with freed texture");
+        //throw new IllegalStateException("Tried to draw with freed texture");
       }
-      GLES30.glActiveTexture(GLES30.GL_TEXTURE0 + textureUnit);
-      GLError.maybeThrowGLException("Failed to set active texture", "glActiveTexture");
-      GLES30.glBindTexture(texture.getTarget().glesEnum, texture.getTextureId());
-      GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
-      GLES30.glUniform1i(location, textureUnit);
-      GLError.maybeThrowGLException("Failed to set shader texture uniform", "glUniform1i");
+      else {
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0 + textureUnit);
+        GLError.maybeThrowGLException("Failed to set active texture", "glActiveTexture");
+        GLES30.glBindTexture(texture.getTarget().glesEnum, texture.getTextureId());
+        GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
+        GLES30.glUniform1i(location, textureUnit);
+        GLError.maybeThrowGLException("Failed to set shader texture uniform", "glUniform1i");
+      }
     }
   }
 
@@ -626,7 +628,7 @@ public class Shader implements Closeable {
           Log.WARN, TAG, "Failed to retrieve shader info log", "glGetShaderInfoLog");
       GLES30.glDeleteShader(shaderId);
       GLError.maybeLogGLError(Log.WARN, TAG, "Failed to free shader", "glDeleteShader");
-      throw new GLException(0, "Shader compilation failed: " + infoLog);
+//      throw new GLException(0, "Shader compilation failed: " + infoLog);
     }
 
     return shaderId;

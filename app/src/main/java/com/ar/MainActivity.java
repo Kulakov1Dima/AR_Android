@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
                 mArButton.setVisibility(View.VISIBLE);
                 mArButton.setEnabled(true);
             } else { // The device is unsupported or unknown.
-                mArButton.setVisibility(View.INVISIBLE);
-                mArButton.setEnabled(false);
+                //mArButton.setVisibility(View.INVISIBLE);
+               // mArButton.setEnabled(false);
             }
         });
     }

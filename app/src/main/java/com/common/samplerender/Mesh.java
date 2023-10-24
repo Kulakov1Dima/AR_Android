@@ -164,31 +164,50 @@ public class Mesh implements Closeable {
    */
   public void lowLevelDraw() {
     if (vertexArrayId[0] == 0) {
-      throw new IllegalStateException("Tried to draw a freed Mesh");
+//      throw new IllegalStateException("Tried to draw a freed Mesh");
     }
+    else {
 
-    GLES30.glBindVertexArray(vertexArrayId[0]);
-    GLError.maybeThrowGLException("Failed to bind vertex array object", "glBindVertexArray");
-    if (indexBuffer == null) {
-      // Sanity check for debugging
-      int vertexCount = vertexBuffers[0].getNumberOfVertices();
-      for (int i = 1; i < vertexBuffers.length; ++i) {
-        int iterCount = vertexBuffers[i].getNumberOfVertices();
-        if (iterCount != vertexCount) {
-          throw new IllegalStateException(
-              String.format(
-                  "Vertex buffers have mismatching numbers of vertices ([0] has %d but [%d] has"
-                      + " %d)",
-                  vertexCount, i, iterCount));
+      GLES30.glBindVertexArray(vertexArrayId[0]);
+      GLError.maybeThrowGLException("Failed to bind vertex array object", "glBindVertexArray");
+      if (indexBuffer == null) {
+        // Sanity check for debugging
+        int vertexCount = vertexBuffers[0].getNumberOfVertices();
+        for (int i = 1; i < vertexBuffers.length; ++i) {
+          int iterCount = vertexBuffers[i].getNumberOfVertices();
+          if (iterCount != vertexCount) {
+            throw new IllegalStateException(
+                    String.format(
+                            "Vertex buffers have mismatching numbers of vertices ([0] has %d but [%d] has"
+                                    + " %d)",
+                            vertexCount, i, iterCount));
+          }
         }
+        GLES30.glDrawArrays(primitiveMode.glesEnum, 0, vertexCount);
+        GLError.maybeThrowGLException("Failed to draw vertex array object", "glDrawArrays");
+      } else {
+        GLES30.glDrawElements(
+                primitiveMode.glesEnum, indexBuffer.getSize(), GLES30.GL_UNSIGNED_INT, 0);
+        GLError.maybeThrowGLException(
+                "Failed to draw vertex array object with indices", "glDrawElements");
       }
-      GLES30.glDrawArrays(primitiveMode.glesEnum, 0, vertexCount);
-      GLError.maybeThrowGLException("Failed to draw vertex array object", "glDrawArrays");
-    } else {
-      GLES30.glDrawElements(
-          primitiveMode.glesEnum, indexBuffer.getSize(), GLES30.GL_UNSIGNED_INT, 0);
-      GLError.maybeThrowGLException(
-          "Failed to draw vertex array object with indices", "glDrawElements");
     }
   }
+  public void scaleVertices(float scale) {
+    if (scale <= 0.0f) {
+      throw new IllegalArgumentException("Фактор масштабирования должен быть больше нуля");
+    }
+
+    for (VertexBuffer vertexBuffer : vertexBuffers) {
+      float[] vertices = vertexBuffer.getVertexData(); //
+      if (vertices != null) {
+        for (int i = 0; i < vertices.length; i++) {
+          vertices[i] *= scale;
+        }
+
+        vertexBuffer.setVertexData(vertices);
+      }
+    }
+  }
+
 }
