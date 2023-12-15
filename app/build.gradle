@@ -3,12 +3,14 @@ plugins {
 }
 
 android {
+    namespace 'com.example.ar'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.ar"
-        minSdkVersion 24
-        targetSdkVersion 31
+        applicationId "com.example.ar"
+        minSdk 28
+        //noinspection EditedTargetSdkVersion
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -25,18 +27,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'com.ar'
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
 
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'de.javagl:obj:0.4.0'
     implementation 'com.google.ar:core:1.40.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
 }
